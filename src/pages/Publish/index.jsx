@@ -44,6 +44,12 @@ const Publish = () => {
         setFileList(fileList);
     }
 
+    //切换图片
+    const [imgCount,setImageCount] = useState(1);
+    const radioChange = (e) => {
+        //console.log(e.target.value);
+        setImageCount(e.target.value);
+    }
     const {channelStore} = useStore();
     return (
       <div className="publish">
@@ -83,25 +89,30 @@ const Publish = () => {
   
             <Form.Item label="封面">
               <Form.Item name="type">
-                <Radio.Group>
+                {/* 看Radio.Group的官方文档 */}
+                <Radio.Group onChange={radioChange}> 
                   <Radio value={1}>单图</Radio>
                   <Radio value={3}>三图</Radio>
                   <Radio value={0}>无图</Radio>
                 </Radio.Group>
               </Form.Item>
-              <Upload
-                name="image" //说明是图片上传
-                listType="picture-card"  //上传图片的样式
-                className="avatar-uploader" 
-                showUploadList //上传图片时是否展示选择好的图片列表，加上这个属性表示展示
-                action={"http://geek.itheima.net/v1_0/upload"}  //配置图片的上传接口地址
-                fileList={fileList} // 表示是受控的形式，通过react中的fileList存储图片的列表来控制Upload组件的fileList属性，目的是为了保持与react的数据状态一直
-                onChange={onUploadChange} //当上传列表发生变化的时候执行的回调函数
-              >
-                <div style={{ marginTop: 8 }}>
-                  <PlusOutlined />
-                </div>
-              </Upload>
+              {/* 只有不是无图选项时才展示上传图片 */}
+              {/* 短路逻辑写法 */}
+              {imgCount > 0 && (
+                 <Upload
+                 name="image" //说明是图片上传
+                 listType="picture-card"  //上传图片的样式
+                 className="avatar-uploader" 
+                 showUploadList //上传图片时是否展示选择好的图片列表，加上这个属性表示展示
+                 action={"http://geek.itheima.net/v1_0/upload"}  //配置图片的上传接口地址
+                 fileList={fileList} // 表示是受控的形式，通过react中的fileList存储图片的列表来控制Upload组件的fileList属性，目的是为了保持与react的数据状态一直
+                 onChange={onUploadChange} //当上传列表发生变化的时候执行的回调函数
+               >
+                 <div style={{ marginTop: 8 }}>
+                   <PlusOutlined />
+                 </div>
+               </Upload>
+              )}
             </Form.Item>
             {/* 这里的富文本组件 已经被Form.Item控制 */}
             {/* 它的输入内容 会在onFinished回调中收集起来 */}
