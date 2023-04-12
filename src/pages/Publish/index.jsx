@@ -16,11 +16,34 @@ import './index.scss'
 import ReactQuill from 'react-quill'
 import 'react-quill/dist/quill.snow.css'
 import { useStore } from '@/store';
-import observer from './../login/index';
+import { useState } from 'react'
+import { observer } from 'mobx-react-lite'
 
 const { Option } = Select
   
 const Publish = () => {
+
+    //存放上传图片的列表
+    const [fileList , setFileList] = useState([]);
+    const onUploadChange = (info) => {
+        // 经过试验，若这样写，console.log会打印出三次结果
+        // upload组件会在上传前、上传中、上传完成三个阶段出发onChange的回调函数,最后一次触发时返回值中有response属性
+        // 我们将这个response属性中的data属性中的url值获取到
+        // 存储进react的state状态属性fileList中，实现组件属性受控写法
+        //console.log(fileList);
+        // setFileList(fileList);
+        const fileList = info.fileList.map(file => {
+            if (file.response) {
+              return {
+                url: file.response.data.url
+              }
+            }
+            return file
+        })
+        console.log(fileList);
+        setFileList(fileList);
+    }
+
     const {channelStore} = useStore();
     return (
       <div className="publish">
@@ -67,10 +90,13 @@ const Publish = () => {
                 </Radio.Group>
               </Form.Item>
               <Upload
-                name="image"
-                listType="picture-card"
-                className="avatar-uploader"
-                showUploadList
+                name="image" //说明是图片上传
+                listType="picture-card"  //上传图片的样式
+                className="avatar-uploader" 
+                showUploadList //上传图片时是否展示选择好的图片列表，加上这个属性表示展示
+                action={"http://geek.itheima.net/v1_0/upload"}  //配置图片的上传接口地址
+                fileList={fileList} // 表示是受控的形式，通过react中的fileList存储图片的列表来控制Upload组件的fileList属性，目的是为了保持与react的数据状态一直
+                onChange={onUploadChange} //当上传列表发生变化的时候执行的回调函数
               >
                 <div style={{ marginTop: 8 }}>
                   <PlusOutlined />
