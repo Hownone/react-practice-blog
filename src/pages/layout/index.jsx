@@ -17,10 +17,11 @@ const { Header, Sider } = Layout
 const MyLayout = () => {
   const location = useLocation(); //用来获取当前的页面路径，这里主要用来激活菜单高亮
   const {pathname} = location;
-  const {UserStore, LoginStore} = useStore();
+  const {UserStore, LoginStore,channelStore} = useStore();
   useEffect(() => {
     UserStore.getUserInfo();
-  },[UserStore]) 
+    channelStore.loadChannelList();
+  },[UserStore,channelStore]) 
   //这里只需要在页面初始化加载完时拉取一次数据，所以[]即可
   //这里添加UserStore并不是意味着它一个响应式变量，仅仅是加上不会爆语法错误\
 

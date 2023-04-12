@@ -4,12 +4,13 @@
 import LoginStore from './login.Store';
 import { createContext, useContext } from 'react'
 import UserStore from './user.Store';
+import ChannelStore from './channel.Store';
 
 class RootStore {
     constructor() {
         this.LoginStore = new LoginStore();
         this.UserStore = new UserStore();
-        //
+        this.channelStore = new ChannelStore();
     }
 }
 

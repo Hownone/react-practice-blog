@@ -9,16 +9,19 @@ import {
     Space,
     Select
   } from 'antd'
-  import { PlusOutlined } from '@ant-design/icons'
-  import { Link } from 'react-router-dom'
-  import './index.scss'
-  //导入富文本编辑器
-  import ReactQuill from 'react-quill'
-  import 'react-quill/dist/quill.snow.css'
+import { PlusOutlined } from '@ant-design/icons'
+import { Link } from 'react-router-dom'
+import './index.scss'
+//导入富文本编辑器
+import ReactQuill from 'react-quill'
+import 'react-quill/dist/quill.snow.css'
+import { useStore } from '@/store';
+import observer from './../login/index';
+
+const { Option } = Select
   
-  const { Option } = Select
-  
-  const Publish = () => {
+const Publish = () => {
+    const {channelStore} = useStore();
     return (
       <div className="publish">
         <Card
@@ -49,7 +52,9 @@ import {
               rules={[{ required: true, message: '请选择文章频道' }]}
             >
               <Select placeholder="请选择文章频道" style={{ width: 400 }}>
-                <Option value={0}>推荐</Option>
+                {channelStore.channelList.map(item => (
+                    <Option key={item.id} value={item.id}> {item.name} </Option>
+                ))}
               </Select>
             </Form.Item>
   
@@ -93,6 +98,6 @@ import {
         </Card>
       </div>
     )
-  }
-  
-  export default Publish
+}
+
+export default observer(Publish);
