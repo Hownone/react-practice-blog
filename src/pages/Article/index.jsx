@@ -67,7 +67,7 @@ const Article = () => {
           count: total_count
         })
       }
-      fetchArticleList()
+      fetchArticleList();
     }, [params])
 
     // 筛选功能
@@ -77,10 +77,9 @@ const Article = () => {
         const {status,channel_id,date} = values;
         //格式化表单数据
         const _params = {};
-        // if (status !== -1) { // -1表示全选，全选的时候不需要加参数给后端
-        //   _params.status = status;
-        // }
-        _params.status = status;
+        if (status !== -1) { // -1表示全选，需要特判
+          _params.status = status;
+        } else _params.status = undefined;
 
         if (channel_id) {
           _params.channel_id = channel_id;
@@ -90,6 +89,7 @@ const Article = () => {
           _params.begin_pubdate = date[0].format('YYYY-MM-DD'); //格式化成后端要求的格式
           _params.end_pubdate = date[1].format('YYYY-MM-DD');
         }
+        //console.log(_params);
 
         // 修改params数据，引起接口的重新发送
         setParams({
@@ -220,10 +220,10 @@ const Article = () => {
             >
                 <Form 
                     onFinish={handelFinish}
-                    initialValues={{ status: null }}>
+                    initialValues={{ status: -1 }}>
                     <Form.Item label="状态" name="status">
                         <Radio.Group>
-                            <Radio value={null}>全部</Radio>
+                            <Radio value={-1}>全部</Radio>
                             <Radio value={0}>草稿</Radio>
                             <Radio value={1}>待审核</Radio>
                             <Radio value={2}>审核通过</Radio>
@@ -235,7 +235,7 @@ const Article = () => {
                         <Select placeholder="请选择文章频道" style={{ width: 200 }} >
                         {channelStore.channelList.map(item => (
                             <Option key={item.id} value={item.id}>
-                            {item.name}
+                              {item.name}
                             </Option>
                         ))}
                         </Select>
