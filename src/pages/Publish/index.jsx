@@ -41,11 +41,13 @@ const Publish = () => {
         // setFileList(fileList);
         //console.log("info.fileList:",info.fileList);
         const fileList = info.fileList.map(file => {
+           // 上传完毕，做数据处理
             if (file.response) {
               return {
                 url: file.response.data.url
               }
             }
+            // 正在上传中，不做处理
             return file
         })
         console.log(fileList);
@@ -96,9 +98,17 @@ const Publish = () => {
         },
        }
        // console.log(params);
-       await http.post('/mp/articles?draft=false',params); //调取后端接口
+       if (id) {
+        //编辑
+        await http.put(`/mp/articles/${id}?draft=false`,params);
+        message.success("文章修改成功");
+
+       } else {
+        //新增
+        await http.post('/mp/articles?draft=false',params); //调取后端接口
+        message.success("文章创建成功");
+       }
        //跳转列表 提示用户
-       message.success("文章创建成功");
        navigate('/article');
     }
 
